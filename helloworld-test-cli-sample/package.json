@@ -25,7 +25,6 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile",
 		"test": "vscode-test"
 	},
 	"devDependencies": {
