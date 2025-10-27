@@ -5,7 +5,16 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 // import * as myExtension from '../../extension';
 
-suite('Extension Test Suite', () => {
+suite('Extension Test Suite', function () {
+	this.timeout(
+		// Both of these expressions cause an error in
+		// the extraction of tests. Initially I thought
+		// it was the use of 'Math' but the second expression
+		// shows that it wasn't the issue.
+		Math.max(5, this.timeout())
+		// this.timeout() > 5 ? this.timeout() : 5
+	);
+
 	vscode.window.showInformationMessage('Start all tests.');
 
 	test('Sample test', () => {
