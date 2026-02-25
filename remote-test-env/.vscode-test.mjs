@@ -1,4 +1,7 @@
 import { defineConfig } from '@vscode/test-cli';
+import * as dotenv from 'dotenv';
+
+dotenv.config({ override: true, quiet: true });
 
 /**
  * The following line makes the env var available in non-debug test executions.
