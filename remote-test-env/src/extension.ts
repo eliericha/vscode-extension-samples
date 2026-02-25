@@ -21,10 +21,14 @@ export function activate(context: vscode.ExtensionContext) {
 	const getEnvVarDisposable = vscode.commands.registerCommand('remote-test-env.getEnvVar', async () => {
 		const sentinel = process.env.TEST_SENTINEL || '<undefined>';
 		vscode.window.showInformationMessage(`TEST_SENTINEL: ${sentinel}`);
-		// Write to file for inspection
+		// Write to file for inspection in workspace root
 		const fs = await import('fs');
 		const path = await import('path');
-		const outPath = path.join(__dirname, '../../.env-inspect-command.txt');
+		const workspaceFolders = vscode.workspace.workspaceFolders;
+		if (!workspaceFolders || workspaceFolders.length !== 1) {
+			throw new Error('Expected a single workspace root');
+		}
+		const outPath = path.join(workspaceFolders[0].uri.fsPath, '.env-inspect-command.txt');
 		fs.writeFileSync(outPath, `TEST_SENTINEL=${sentinel}\n`);
 		return sentinel;
 	});

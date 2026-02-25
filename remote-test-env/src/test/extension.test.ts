@@ -67,7 +67,7 @@ suite('Extension Test Suite', () => {
 		await vscode.tasks.executeTask(task!);
 		await onEnd;
 
-		const outPath = path.join(workspaceRoot!, '.env-inspect-task.txt');
+		const outPath = path.join(workspaceRoot, '.env-inspect-task.txt');
 		const content = await waitForFile(outPath, 5000);
 		assert.ok(
 			content.includes('TEST_SENTINEL='),
@@ -92,7 +92,7 @@ suite('Extension Test Suite', () => {
 			'Extension command should return TEST_SENTINEL',
 		);
 
-		const outPath = path.join(__dirname, '../../.env-inspect-command.txt');
+		const outPath = path.join(workspaceRoot, '.env-inspect-command.txt');
 		const content = await waitForFile(outPath, 5000);
 		assert.ok(
 			content.includes('TEST_SENTINEL='),
