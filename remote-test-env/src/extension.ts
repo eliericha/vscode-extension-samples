@@ -14,12 +14,42 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	const disposable = vscode.commands.registerCommand('remote-test-env.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello World from remote-test-env!');
 	});
 
-	context.subscriptions.push(disposable);
+	// Command to get the sentinel environment variable and write it to a file
+	const getEnvVarDisposable = vscode.commands.registerCommand('remote-test-env.getEnvVar', async () => {
+		const sentinel = process.env.TEST_SENTINEL || '<undefined>';
+		vscode.window.showInformationMessage(`TEST_SENTINEL: ${sentinel}`);
+		// Write to file for inspection
+		const fs = await import('fs');
+		const path = await import('path');
+		const outPath = path.join(__dirname, '../../.env-inspect-command.txt');
+		fs.writeFileSync(outPath, `TEST_SENTINEL=${sentinel}\n`);
+		return sentinel;
+	});
+
+	// TaskProvider to provide a task that echoes and writes the sentinel variable
+	const taskProvider = vscode.tasks.registerTaskProvider('sentinel', {
+		provideTasks: () => {
+			// Write to .env-inspect-task.txt in the workspace root
+			const writeCmd = 'echo TEST_SENTINEL=$TEST_SENTINEL > .env-inspect-task.txt && echo $TEST_SENTINEL';
+			const task = new vscode.Task(
+				{ type: 'sentinel' },
+				vscode.TaskScope.Workspace,
+				'Echo TEST_SENTINEL',
+				'sentinel',
+				new vscode.ShellExecution(writeCmd),
+				[]
+			);
+			return [task];
+		},
+		resolveTask(_task: vscode.Task): vscode.Task | undefined {
+			return undefined;
+		}
+	});
+
+	context.subscriptions.push(disposable, getEnvVarDisposable, taskProvider);
 }
 
 // This method is called when your extension is deactivated

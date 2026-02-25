@@ -16,6 +16,17 @@
       {
         "command": "remote-test-env.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "remote-test-env.getEnvVar",
+        "title": "Get TEST_SENTINEL Environment Variable"
+      }
+    ],
+    "taskDefinitions": [
+      {
+        "type": "sentinel",
+        "required": [],
+        "properties": {}
       }
     ]
   },
